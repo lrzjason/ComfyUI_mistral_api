@@ -32,7 +32,7 @@ class preview_text:
     OUTPUT_NODE = True
     OUTPUT_IS_LIST = (True,)
 
-    CATEGORY = "ComfyUI/Pixtral Large"
+    CATEGORY = "ComfyUI/Pixtral"
 
     def run(self, text):
         if not isinstance(text, list):
@@ -63,7 +63,7 @@ class MultiImagesInput:
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("images",)
     FUNCTION = "combine"
-    CATEGORY = "ComfyUI/Pixtral Large"
+    CATEGORY = "ComfyUI/Pixtral"
 
     DESCRIPTION = """
     Creates an image batch from multiple images.
@@ -90,11 +90,12 @@ class MultiImagesInput:
         
         return (result,)
 
-class ComfyUIPixtralLarge:
+class ComfyUIPixtral:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
+                "model_name": ("STRING", {"default": "pixtral-12b-2409"}),
                 "prompt": ("STRING", {"default": "Describe the image"}),
                 "images": ("IMAGE", {"multiple": True}),
                 "api_key": ("STRING", {"default": "Enter your Mistral API key here"}),
@@ -106,9 +107,9 @@ class ComfyUIPixtralLarge:
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "process"
-    CATEGORY = "ComfyUI/Pixtral Large"
+    CATEGORY = "ComfyUI/Pixtral"
 
-    def process(self, prompt, images, api_key, temperature, maximum_tokens, top_p):
+    def process(self, model_name, prompt, images, api_key, temperature, maximum_tokens, top_p):
         try:
             image_urls = []
             for image in images:
@@ -161,7 +162,7 @@ class ComfyUIPixtralLarge:
             ]
             
             data = {
-                "model": "pixtral-large-latest",
+                "model": model_name,
                 "messages": messages,
                 "temperature": temperature,
                 "max_tokens": maximum_tokens,
@@ -187,14 +188,14 @@ class ComfyUIPixtralLarge:
 
 # Register all nodes
 NODE_CLASS_MAPPINGS = {
-    "ComfyUIPixtralLarge": ComfyUIPixtralLarge,
+    "ComfyUIPixtral": ComfyUIPixtral,
     "MultiImagesInput": MultiImagesInput,
     "preview_text": preview_text,
 }
 
 # Optional: Add descriptions for the nodes
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "ComfyUIPixtralLarge": "Pixtral Large",
+    "ComfyUIPixtral": "Pixtral",
     "MultiImagesInput": "Multi Images Input",
     "preview_text": "Preview Text"
 }
